@@ -21,7 +21,8 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown("escape")) TogglePause();
         
         if(!paused){
-            movement.Move();
+            movement.Move(Input.GetAxisRaw("Horizontal"));
+            if(Input.GetKeyDown("space")) movement.Jump();
         }
     }
 
