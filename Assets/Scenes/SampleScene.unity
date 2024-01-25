@@ -508,6 +508,7 @@ MonoBehaviour:
   speed: 5
   gravityAccel: -10
   verticalVelocity: 0
+  jumpStorageLimit: 0.1
   jumpVelocity: 5
   boxSize: {x: 0.79, y: 0.12, z: 0.24}
   castDistance: 0.84
@@ -527,7 +528,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: {fileID: 0}
-  state: Moving
+  paused: 0
 --- !u!23 &1443874785
 MeshRenderer:
   m_ObjectHideFlags: 0

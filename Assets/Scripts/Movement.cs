@@ -10,7 +10,10 @@ public class Movement : MonoBehaviour
     [SerializeField] private float verticalVelocity = 0;
     private const float TERMINAL_VELOCITY = -60;
 
+    [SerializeField] private float jumpStorageLimit;
     [SerializeField] private float jumpVelocity;
+    private bool jumpStored;
+    private float timeSinceJumpPressed = 0.0f;
     [SerializeField] private Vector3 boxSize;
 
     [SerializeField] private float castDistance;
@@ -35,13 +38,31 @@ public class Movement : MonoBehaviour
             verticalVelocity += gravityAccel * Time.deltaTime;
         }
 
+        
+
         if(IsGrounded()){
-            if(Input.GetKeyDown("space")){
+            if(Input.GetKeyDown("space") || (jumpStored && timeSinceJumpPressed < jumpStorageLimit)){
                 verticalVelocity = jumpVelocity;
+                jumpStored = false;
+                timeSinceJumpPressed = 0.0f;
             }else if(verticalVelocity < 0){
                 verticalVelocity = 0;
             }
             
+        }else {
+            if(Input.GetKeyDown("space")){
+                jumpStored = true;
+                timeSinceJumpPressed = 0;
+            }
+        }
+
+        if(jumpStored){
+            if(timeSinceJumpPressed < jumpStorageLimit){
+                timeSinceJumpPressed += Time.deltaTime;
+            }else{
+                timeSinceJumpPressed = 0.0f;
+                jumpStored = false;
+            }
         }
 
         rb.position += new Vector2(direction * speed * Time.deltaTime, verticalVelocity * Time.deltaTime);

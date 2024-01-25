@@ -6,26 +6,26 @@ public class PlayerController : MonoBehaviour
 {
     public Movement movement;
 
-    [SerializeField] private string state = "Moving";
+    [SerializeField] private bool paused;
 
     // Start is called before the first frame update
     void Start()
     {
         movement = gameObject.GetComponent<Movement>();
+        paused = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(state == "Moving"){
-            if(Input.GetKeyDown("escape")){
-                state = "Paused";
-            }
+        if(Input.GetKeyDown("escape")) TogglePause();
+        
+        if(!paused){
             movement.Move();
-        }else {
-           if(Input.GetKeyDown("escape")){
-                state = "Moving";
-            } 
-        }   
+        }
+    }
+
+    public void TogglePause(){
+        paused = !paused;
     }
 }
