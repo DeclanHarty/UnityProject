@@ -5,21 +5,25 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     // Horizontal Movement
+    [Header("Horizontal Movement Stats")]
     [SerializeField] private float speed = 5;
 
     // Gravity Fields
+    [Header("Gravity Stats")]
     [SerializeField] private float gravityAccel = -10;
 
     [SerializeField] private float verticalVelocity = 0;
     private const float TERMINAL_VELOCITY = -60;
 
     // Jump Fields
+    [Header("Jumping Stats")]
     [SerializeField] private float jumpStorageLimit;
     [SerializeField] private float jumpVelocity;
     private bool jumpStored;
     private float timeSinceJumpPressed = 0.0f;
 
     // Ground Check Fields
+    [Header("Groundchecking")]
     [SerializeField] private Vector3 boxSize;
 
     [SerializeField] private float castDistance;
@@ -113,6 +117,10 @@ public class Movement : MonoBehaviour
         if (verticalVelocity > TERMINAL_VELOCITY && !grounded) { 
             verticalVelocity += gravityAccel * Time.deltaTime;
         }
+    }
+
+    private void HandleVaulting(){
+        rb.position += new Vector2(0, 50); 
     }
 
 
