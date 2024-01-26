@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -7,6 +8,7 @@ public class Movement : MonoBehaviour
     // Horizontal Movement
     [Header("Horizontal Movement Stats")]
     [SerializeField] private float speed = 5;
+    private float direction;
 
     // Gravity Fields
     [Header("Gravity Stats")]
@@ -23,70 +25,40 @@ public class Movement : MonoBehaviour
     private float timeSinceJumpPressed = 0.0f;
 
     // Ground Check Fields
-    [Header("Groundchecking")]
-    [SerializeField] private Vector3 groundBoxSize;
-    [SerializeField] private float groundCastDistance;
-    [SerializeField] private LayerMask groundLayer;
     private bool grounded; 
 
     // Vault Check Fields
-    [Header("Vaultchecking")]
-    [Header("Lower Cast")]
-    [SerializeField] private Vector3 lowerVaultBoxSize;
-    [SerializeField] private float lowerVaultCastDistance;
+    private bool canVault;
 
     private Vector3 lowerVaultPosOffeset = new Vector3(0,.4f, 0);
 
     // Rigidbody
     private Rigidbody2D rb;
 
-
-
-     
+    // Collider
+    private CapsuleCollider2D col;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        IsGrounded();
+        col = GetComponent<CapsuleCollider2D>();
     }
 
     void FixedUpdate(){
-        IsGrounded();
     }
 
     public void Move(float direction){
-        IsGrounded();
         ApplyGravity();
-        
 
-        // if(grounded){
-        //     if(Input.GetKeyDown("space") || (jumpStored && timeSinceJumpPressed < jumpStorageLimit)){
-        //         verticalVelocity = jumpVelocity;
-        //         jumpStored = false;
-        //         timeSinceJumpPressed = 0.0f;
-        //     }else if(verticalVelocity < 0){
-        //         verticalVelocity = 0;
-        //     }
-            
-        // }else {
-        //     if(Input.GetKeyDown("space")){
-        //         jumpStored = true;
-        //         timeSinceJumpPressed = 0;
-        //     }
-        // }
+        this.direction = direction;
 
         if(jumpStored){
-            // if(grounded && timeSinceJumpPressed < jumpStorageLimit){
-            //     Jump();
-            // }else if(timeSinceJumpPressed < jumpStorageLimit){
-            //     timeSinceJumpPressed += Time.deltaTime;
-                
-            // }else{
-            //     timeSinceJumpPressed = 0.0f;
-            //     jumpStored = false;
-            // }
             HandleJumpStorage();  
+        }
+
+        if(canVault){
+            HandleVaulting();
         }
 
         rb.position += new Vector2(direction * speed * Time.deltaTime, verticalVelocity * Time.deltaTime);
@@ -102,20 +74,23 @@ public class Movement : MonoBehaviour
         }
     }
 
-    private void IsGrounded(){
-        if(Physics2D.BoxCast(transform.position, groundBoxSize, 0, -transform.up, groundCastDistance, groundLayer)){
-            grounded = true;
-        }else{
-            grounded = false;
+    public void UpdateGrounded(bool check){
+        grounded = check;
+        if(grounded){
+            verticalVelocity = 0;
         }
+    }
+
+    public void UpdateCanVault(bool check){
+        canVault = check;
+        Debug.Log(canVault);
     }
 
     private void HandleJumpStorage(){
         if(grounded && timeSinceJumpPressed < jumpStorageLimit){
-                Jump();
+            Jump();
         }else if(timeSinceJumpPressed < jumpStorageLimit){
             timeSinceJumpPressed += Time.deltaTime;
-            
         }else{
             timeSinceJumpPressed = 0.0f;
             jumpStored = false;
@@ -123,22 +98,22 @@ public class Movement : MonoBehaviour
     }
 
     private void ApplyGravity(){
-        if (verticalVelocity > TERMINAL_VELOCITY && !grounded) { 
-            verticalVelocity += gravityAccel * Time.deltaTime;
+        if (!grounded && !canVault) { 
+            if(verticalVelocity > TERMINAL_VELOCITY){
+                verticalVelocity += gravityAccel * Time.deltaTime;
+            }
         }
     }
 
-    private void VaultCheck(){}
-
     private void HandleVaulting(){
-        rb.position += new Vector2(0, 1); 
+        col.isTrigger = true;
+    }
+
+    public float GetDireciton(){
+        return direction;
     }
 
 
-    void OnDrawGizmos(){
-        Gizmos.DrawWireCube(transform.position - transform.up * groundCastDistance, groundBoxSize);
-        Gizmos.DrawWireCube(transform.position - lowerVaultPosOffeset + transform.right * lowerVaultCastDistance, lowerVaultBoxSize);
-    }
 
 
 }
