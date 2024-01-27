@@ -8,9 +8,14 @@ public class LedgeGrabCheck : DrawableBoxCast
     private bool canVault;
     private Movement movement;
     private int directionScalar = 1;
+
+    [SerializeField] private Vector2 ledgePos;
+
+
     public override bool CastCheck()
     {
         if(Physics2D.BoxCast(transform.position + posOffset, boxSize, 0, castDirection, castDistance, castLayer) && !Physics2D.BoxCast(transform.position + posOffset + new Vector3(0,clearCheck,0), boxSize, 0, castDirection * directionScalar, castDistance, castLayer)){
+            ledgePos = transform.position + posOffset;
             return true;
         }else{
             return false;

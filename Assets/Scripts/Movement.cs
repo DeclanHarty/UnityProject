@@ -28,7 +28,7 @@ public class Movement : MonoBehaviour
     private bool grounded; 
 
     // Vault Check Fields
-    private bool canVault;
+    [SerializeField] private bool canVault;
 
     private Vector3 lowerVaultPosOffeset = new Vector3(0,.4f, 0);
 
@@ -37,6 +37,9 @@ public class Movement : MonoBehaviour
 
     // Collider
     private CapsuleCollider2D col;
+
+    // LedgeCheck
+
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +62,7 @@ public class Movement : MonoBehaviour
 
         if(canVault){
             HandleVaulting();
+            return;
         }
 
         rb.position += new Vector2(direction * speed * Time.deltaTime, verticalVelocity * Time.deltaTime);
@@ -106,7 +110,7 @@ public class Movement : MonoBehaviour
     }
 
     private void HandleVaulting(){
-        col.isTrigger = true;
+        
     }
 
     public float GetDireciton(){
