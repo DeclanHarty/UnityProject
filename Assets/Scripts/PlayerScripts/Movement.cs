@@ -206,12 +206,14 @@ public class Movement : MonoBehaviour
     public void Slide(){
         if(!sliding && grounded){
             sliding = true;
+            col.size = new Vector2(1, .2f);
             Invoke("EndSlide", slideTime);
         }
         
     }
 
     public void EndSlide(){
+        col.size = new Vector2(1, 1);
         sliding = false;
     }
 
