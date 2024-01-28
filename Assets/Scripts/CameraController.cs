@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
     private Vector2 position;
     private float travelToPosition;
     [SerializeField] private float cameraSpeed;
-    [SerializeField] private float verticalVelocityMultipler;
+    [SerializeField] private float distanceMultipler;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,13 +26,9 @@ public class CameraController : MonoBehaviour
             travelToPosition = player.GetPosition().y;
         }
 
-        if(Mathf.Abs(travelToPosition - transform.position.y) > 0){
-            Debug.Log(travelToPosition);
-            float verticalVelocity = player.GetVerticalVelocity();
-
-            int direction = travelToPosition - transform.position.y > 0 ? 1 : -1;
-
-            float speedMultiplier = direction == 1 ? Mathf.Max(direction, verticalVelocity * verticalVelocityMultipler) : Mathf.Min(direction, verticalVelocity * verticalVelocityMultipler);
+        float posDifference = travelToPosition - transform.position.y;
+        if(Mathf.Abs(posDifference) > 0){
+            float speedMultiplier = posDifference * distanceMultipler;
 
             transform.position += new Vector3(0, speedMultiplier * cameraSpeed * Time.deltaTime, 0);
         }
