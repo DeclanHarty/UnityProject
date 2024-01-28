@@ -1116,8 +1116,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a42ff60fef1d04c17884fa9d38e9b107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxSize: {x: 0.36, y: 0.15, z: 0}
-  castDistance: 0.46
+  boxSize: {x: 0.12, y: 0.09, z: 0}
+  castDistance: 0.55
   castDirection: {x: 1, y: 0, z: 0}
   castLayer:
     serializedVersion: 2
