@@ -20,7 +20,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float gravityAccel = -10;
 
     [SerializeField] private float verticalVelocity = 0;
-    private const float TERMINAL_VELOCITY = -60;
+    [SerializeField] private float TERMINAL_VELOCITY = -60;
 
     // Jump Fields
     [Header("Jumping Stats")]
@@ -43,6 +43,11 @@ public class Movement : MonoBehaviour
 
     [SerializeField] private float ledgeJumpSpeed;
 
+    // Sliding Fields
+    private bool sliding;
+    [SerializeField] private float slideSpeed;
+    [SerializeField] private float slideTime;
+
 
     // Rigidbody
     private Rigidbody2D rb;
@@ -53,12 +58,18 @@ public class Movement : MonoBehaviour
     // LedgeCheck
     private LedgeGrabCheck ledge;
 
+    // Ground Check
+    [SerializeField] private GameObject groundCheckObject;
+
+    private GroundCheck groundCheck;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
         ledge = GetComponent<LedgeGrabCheck>();
+        groundCheck = groundCheckObject.GetComponent<GroundCheck>();
     }
 
     void FixedUpdate(){
@@ -80,6 +91,13 @@ public class Movement : MonoBehaviour
             }
             return;
         }
+
+        if(sliding){
+            rb.position += new Vector2(slideSpeed * currentDirection * Time.deltaTime, 0);
+            return;
+        }
+
+        
         ApplyGravity();
 
         
@@ -108,17 +126,10 @@ public class Movement : MonoBehaviour
         }
     }
 
-    public void UpdateGrounded(bool check){
-        grounded = check;
-        if(grounded){
+    public void EndJumpEarly(){
+        if(!grounded && verticalVelocity > 0){
             verticalVelocity = 0;
-        }else{
-            timeSinceLeftGround = 0;
         }
-    }
-
-    public void UpdateCanVault(bool check){
-        canVault = check;
     }
 
     private void HandleJumpStorage(){
@@ -132,6 +143,24 @@ public class Movement : MonoBehaviour
         }
     }
 
+    public void UpdateGrounded(bool check){
+        grounded = check;
+        if(grounded){
+            verticalVelocity = 0;
+        }else{
+            timeSinceLeftGround = 0;
+        }
+    }
+
+    public void HitCeiling(){
+        verticalVelocity = Mathf.Min(0, verticalVelocity);
+    }
+
+    public void UpdateCanVault(bool check){
+        canVault = check;
+    }
+
+    
     private void ApplyGravity(){
         if (!grounded && !canVault && !vaulting) { 
             if(verticalVelocity > TERMINAL_VELOCITY){
@@ -171,6 +200,19 @@ public class Movement : MonoBehaviour
             }
             
         }
+    }
+
+    // Slide
+    public void Slide(){
+        if(!sliding && grounded){
+            sliding = true;
+            Invoke("EndSlide", slideTime);
+        }
+        
+    }
+
+    public void EndSlide(){
+        sliding = false;
     }
 
     public float GetDireciton(){

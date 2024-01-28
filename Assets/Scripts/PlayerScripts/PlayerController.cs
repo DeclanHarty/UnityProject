@@ -22,7 +22,9 @@ public class PlayerController : MonoBehaviour
         
         if(!paused){
             movement.Move(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
-            if(Input.GetKeyDown("space")) movement.HandleSpaceInput();
+            if(Input.GetButtonDown("Jump")) movement.HandleSpaceInput();
+            if(Input.GetButtonUp("Jump")) movement.EndJumpEarly();
+            if(Input.GetKeyDown("left shift")) movement.Slide();
         }
     }
 
