@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -8,7 +9,8 @@ public class Movement : MonoBehaviour
     // Horizontal Movement
     [Header("Horizontal Movement Stats")]
     [SerializeField] private float speed = 5;
-    private float direction;
+    [SerializeField] private int currentDirection = 1;
+    private float input;
 
     // Gravity Fields
     [Header("Gravity Stats")]
@@ -29,8 +31,11 @@ public class Movement : MonoBehaviour
 
     // Vault Check Fields
     [SerializeField] private bool canVault;
+    private bool vaulting;
+    [SerializeField] private Vector2 beginClimbOffset;
+    [SerializeField] private Vector2 endClimbOffset;
+    [SerializeField] private float vaultSpeed;
 
-    private Vector3 lowerVaultPosOffeset = new Vector3(0,.4f, 0);
 
     // Rigidbody
     private Rigidbody2D rb;
@@ -39,43 +44,61 @@ public class Movement : MonoBehaviour
     private CapsuleCollider2D col;
 
     // LedgeCheck
-
+    private LedgeGrabCheck ledge;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
+        ledge = GetComponent<LedgeGrabCheck>();
     }
 
     void FixedUpdate(){
     }
 
     public void Move(float direction){
+        if(canVault){
+            HandleVaulting();
+            return;
+        }else if(vaulting){
+            if(Input.GetKeyDown("s")){
+                vaulting = false;
+            }else if(Input.GetKeyDown("space")){
+                Invoke("FinishVault", vaultSpeed);
+            }
+
+            return;
+        }
+
         ApplyGravity();
 
-        this.direction = direction;
+        this.input = direction;
+        if(input > 0){
+            currentDirection = 1;
+        }else if(input < 0){
+            currentDirection = -1;
+        }
 
         if(jumpStored){
             HandleJumpStorage();  
         }
 
-        if(canVault){
-            HandleVaulting();
-            return;
-        }
-
+        
         rb.position += new Vector2(direction * speed * Time.deltaTime, verticalVelocity * Time.deltaTime);
     }
 
     public void Jump(){
-        if(grounded){
-            verticalVelocity = jumpVelocity;
-            jumpStored = false;
-            timeSinceJumpPressed = 0.0f;
-        }else{
-            jumpStored = true;
+        if(!canVault && !vaulting){
+            if(grounded){
+                verticalVelocity = jumpVelocity;
+                jumpStored = false;
+                timeSinceJumpPressed = 0.0f;
+            }else{
+                jumpStored = true;
+            }
         }
+            
     }
 
     public void UpdateGrounded(bool check){
@@ -102,7 +125,7 @@ public class Movement : MonoBehaviour
     }
 
     private void ApplyGravity(){
-        if (!grounded && !canVault) { 
+        if (!grounded && !canVault && !vaulting) { 
             if(verticalVelocity > TERMINAL_VELOCITY){
                 verticalVelocity += gravityAccel * Time.deltaTime;
             }
@@ -110,11 +133,20 @@ public class Movement : MonoBehaviour
     }
 
     private void HandleVaulting(){
-        
+        canVault = false;
+        verticalVelocity = 0;
+        rb.position = ledge.getLedgePos() + new Vector2(beginClimbOffset.x * ledge.getDirectionScalar(), beginClimbOffset.y);
+        vaulting = true;
+
+    }
+
+    private void FinishVault(){
+        rb.position = ledge.getLedgePos() + new Vector2(endClimbOffset.x * ledge.getDirectionScalar(), endClimbOffset.y);
+        vaulting = false;
     }
 
     public float GetDireciton(){
-        return direction;
+        return currentDirection;
     }
 
 
