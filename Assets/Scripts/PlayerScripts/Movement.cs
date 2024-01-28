@@ -152,7 +152,7 @@ public class Movement : MonoBehaviour
 
         if(vaulting){
             Debug.Log(Mathf.Abs(input.x + currentDirection));
-            if(Mathf.Abs(input.x + currentDirection) > 1){
+            if(Mathf.Abs(input.x + currentDirection) >= 1){
                 FinishVault();
                 return;
             }else{
