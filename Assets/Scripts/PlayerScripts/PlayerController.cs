@@ -21,12 +21,20 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown("escape")) TogglePause();
         
         if(!paused){
-            movement.Move(Input.GetAxisRaw("Horizontal"));
-            if(Input.GetKeyDown("space")) movement.Jump();
+            movement.Move(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
+            if(Input.GetKeyDown("space")) movement.HandleSpaceInput();
         }
     }
 
     public void TogglePause(){
         paused = !paused;
+    }
+
+    public Vector2 GetPosition(){
+        return movement.GetPosition();
+    }
+
+    public float GetVerticalVelocity(){
+        return movement.GetVerticalVelocity();
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,9 @@ public class Movement : MonoBehaviour
     [Header("Horizontal Movement Stats")]
     [SerializeField] private float speed = 5;
     [SerializeField] private int currentDirection = 1;
-    private float input;
+
+    // Input
+    private Vector2 input;
 
     // Gravity Fields
     [Header("Gravity Stats")]
@@ -36,6 +39,8 @@ public class Movement : MonoBehaviour
     [SerializeField] private Vector2 endClimbOffset;
     [SerializeField] private float vaultSpeed;
 
+    [SerializeField] private float ledgeJumpSpeed;
+
 
     // Rigidbody
     private Rigidbody2D rb;
@@ -57,26 +62,24 @@ public class Movement : MonoBehaviour
     void FixedUpdate(){
     }
 
-    public void Move(float direction){
+    public void Move(Vector2 _input){
+        input = _input;
+
         if(canVault){
             HandleVaulting();
             return;
         }else if(vaulting){
-            if(Input.GetKeyDown("s")){
+            if(input.y < 0){
                 vaulting = false;
-            }else if(Input.GetKeyDown("space")){
-                Invoke("FinishVault", vaultSpeed);
             }
-
             return;
         }
-
         ApplyGravity();
 
-        this.input = direction;
-        if(input > 0){
+        
+        if(input.x > 0){
             currentDirection = 1;
-        }else if(input < 0){
+        }else if(input.x < 0){
             currentDirection = -1;
         }
 
@@ -85,20 +88,17 @@ public class Movement : MonoBehaviour
         }
 
         
-        rb.position += new Vector2(direction * speed * Time.deltaTime, verticalVelocity * Time.deltaTime);
+        rb.position += new Vector2(input.x * speed * Time.deltaTime, verticalVelocity * Time.deltaTime);
     }
 
     public void Jump(){
-        if(!canVault && !vaulting){
-            if(grounded){
-                verticalVelocity = jumpVelocity;
-                jumpStored = false;
-                timeSinceJumpPressed = 0.0f;
-            }else{
-                jumpStored = true;
-            }
+        if(grounded){
+            verticalVelocity = jumpVelocity;
+            jumpStored = false;
+            timeSinceJumpPressed = 0.0f;
+        }else{
+            jumpStored = true;
         }
-            
     }
 
     public void UpdateGrounded(bool check){
@@ -110,7 +110,6 @@ public class Movement : MonoBehaviour
 
     public void UpdateCanVault(bool check){
         canVault = check;
-        Debug.Log(canVault);
     }
 
     private void HandleJumpStorage(){
@@ -145,11 +144,37 @@ public class Movement : MonoBehaviour
         vaulting = false;
     }
 
+    public void HandleSpaceInput(){
+        if(!canVault && !vaulting){
+            Jump();
+            return;
+        }
+
+        if(vaulting){
+            Debug.Log(Mathf.Abs(input.x + currentDirection));
+            if(Mathf.Abs(input.x + currentDirection) > 1){
+                FinishVault();
+                return;
+            }else{
+                vaulting = false;
+                verticalVelocity = jumpVelocity;
+                return;
+            }
+            
+        }
+    }
+
     public float GetDireciton(){
         return currentDirection;
     }
 
+    public Vector2 GetPosition(){
+        return rb.position;
+    }
 
+    public float GetVerticalVelocity(){
+        return verticalVelocity;
+    }
 
 
 }

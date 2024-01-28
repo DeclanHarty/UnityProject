@@ -796,13 +796,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a42ff60fef1d04c17884fa9d38e9b107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxSize: {x: 0.25, y: 0.25, z: 0}
-  castDistance: 0.63
+  boxSize: {x: 0.12, y: 0.09, z: 0}
+  castDistance: 0.55
   castDirection: {x: 1, y: 0, z: 0}
   castLayer:
     serializedVersion: 2
     m_Bits: 8
-  posOffset: {x: 0, y: 0.66, z: 0}
+  posOffset: {x: 0, y: 0.75, z: 0}
   clearCheck: 0.2
   ledgePos: {x: 0, y: 0}
 --- !u!1 &1950518229
