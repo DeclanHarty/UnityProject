@@ -31,9 +31,11 @@ public class Movement : MonoBehaviour
 
     // Ground Check Fields
     private bool grounded; 
+    private float timeSinceLeftGround;
+    [SerializeField] private float coyoteTime;
 
     // Vault Check Fields
-    [SerializeField] private bool canVault;
+    private bool canVault;
     private bool vaulting;
     [SerializeField] private Vector2 beginClimbOffset;
     [SerializeField] private Vector2 endClimbOffset;
@@ -65,6 +67,10 @@ public class Movement : MonoBehaviour
     public void Move(Vector2 _input){
         input = _input;
 
+        if(!grounded){
+            timeSinceLeftGround += Time.deltaTime;
+        }
+
         if(canVault){
             HandleVaulting();
             return;
@@ -92,7 +98,8 @@ public class Movement : MonoBehaviour
     }
 
     public void Jump(){
-        if(grounded){
+        if(grounded || timeSinceLeftGround < coyoteTime){
+            timeSinceLeftGround += coyoteTime;
             verticalVelocity = jumpVelocity;
             jumpStored = false;
             timeSinceJumpPressed = 0.0f;
@@ -105,6 +112,8 @@ public class Movement : MonoBehaviour
         grounded = check;
         if(grounded){
             verticalVelocity = 0;
+        }else{
+            timeSinceLeftGround = 0;
         }
     }
 
@@ -153,7 +162,7 @@ public class Movement : MonoBehaviour
         if(vaulting){
             Debug.Log(Mathf.Abs(input.x + currentDirection));
             if(Mathf.Abs(input.x + currentDirection) >= 1){
-                FinishVault();
+                Invoke("FinishVault", vaultSpeed);
                 return;
             }else{
                 vaulting = false;
