@@ -35,13 +35,18 @@ public class Movement : MonoBehaviour
     [SerializeField] private float coyoteTime;
 
     // Vault Check Fields
-    private bool canVault;
-    private bool vaulting;
+    [SerializeField] private bool canVault;
+    [SerializeField] private bool vaulting;
     [SerializeField] private Vector2 beginClimbOffset;
     [SerializeField] private Vector2 endClimbOffset;
     [SerializeField] private float vaultSpeed;
 
     [SerializeField] private float ledgeJumpSpeed;
+
+    // Wall Check Fields
+    private bool wallPresent;
+    private Vector2 wallPos;
+
 
     // Sliding Fields
     private bool sliding;
@@ -56,10 +61,14 @@ public class Movement : MonoBehaviour
     private CapsuleCollider2D col;
 
     // LedgeCheck
-    private LedgeGrabCheck ledge;
+    [SerializeField] private LedgeGrab ledge;
 
     // Ground Check
     [SerializeField] private GameObject groundCheckObject;
+
+    // Wall Check
+    [SerializeField] private GameObject wallCheckObj;
+    private WallCheck wallCheck;
 
     private GroundCheck groundCheck;
 
@@ -68,8 +77,8 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
-        ledge = GetComponent<LedgeGrabCheck>();
         groundCheck = groundCheckObject.GetComponent<GroundCheck>();
+        wallCheck = wallCheckObj.GetComponent<WallCheck>();
     }
 
     void FixedUpdate(){
@@ -82,7 +91,7 @@ public class Movement : MonoBehaviour
             timeSinceLeftGround += Time.deltaTime;
         }
 
-        if(canVault){
+        if(canVault && input.x != 0){
             HandleVaulting();
             return;
         }else if(vaulting){
@@ -112,7 +121,16 @@ public class Movement : MonoBehaviour
         }
 
         
-        rb.position += new Vector2(input.x * speed * Time.deltaTime, verticalVelocity * Time.deltaTime);
+        rb.position += new Vector2(input.x * speed * Time.deltaTime, 0);
+
+        Debug.Log(- Mathf.Abs(wallCheck.GetPosition().x) + .5f - endClimbOffset.x);
+
+        if(wallPresent && !vaulting && !canVault){
+
+            rb.position = new Vector2(Mathf.Clamp(rb.position.x, - Mathf.Abs(wallCheck.GetPosition().x) + .5f - endClimbOffset.x, Mathf.Abs(wallCheck.GetPosition().x) - .5f + endClimbOffset.x), rb.position.y);
+        }
+
+        rb.position += new Vector2(0, verticalVelocity * Time.deltaTime);
     }
 
     public void Jump(){
@@ -162,7 +180,7 @@ public class Movement : MonoBehaviour
 
     
     private void ApplyGravity(){
-        if (!grounded && !canVault && !vaulting) { 
+        if (!grounded && !vaulting) { 
             if(verticalVelocity > TERMINAL_VELOCITY){
                 verticalVelocity += gravityAccel * Time.deltaTime;
             }
@@ -172,13 +190,14 @@ public class Movement : MonoBehaviour
     private void HandleVaulting(){
         canVault = false;
         verticalVelocity = 0;
-        rb.position = ledge.getLedgePos() + new Vector2(beginClimbOffset.x * ledge.getDirectionScalar(), beginClimbOffset.y);
+        rb.position = ledge.getPosition() + new Vector2(beginClimbOffset.x, beginClimbOffset.y);
         vaulting = true;
 
     }
 
     private void FinishVault(){
-        rb.position = ledge.getLedgePos() + new Vector2(endClimbOffset.x * ledge.getDirectionScalar(), endClimbOffset.y);
+        
+        rb.position = ledge.getPosition() + new Vector2(endClimbOffset.x * currentDirection, endClimbOffset.y);
         vaulting = false;
     }
 
@@ -189,7 +208,6 @@ public class Movement : MonoBehaviour
         }
 
         if(vaulting){
-            Debug.Log(Mathf.Abs(input.x + currentDirection));
             if(Mathf.Abs(input.x + currentDirection) >= 1){
                 Invoke("FinishVault", vaultSpeed);
                 return;
@@ -200,6 +218,12 @@ public class Movement : MonoBehaviour
             }
             
         }
+    }
+
+    // Wall Check
+    public void UpdateWall(bool wallPresent, Vector2 wallPos){
+        this.wallPresent = wallPresent;
+        this.wallPos = wallPos;
     }
 
     // Slide

@@ -22,10 +22,6 @@ public class GroundCheck : DrawableBoxCast
 
     public override bool CastCheck()
     {
-        if(Physics2D.BoxCast(transform.position, boxSize, 0, castDirection, castDistance, castLayer)){
-            return true;
-        }else{
-            return false;
-        }
+        return Physics2D.BoxCast(transform.position, boxSize, 0, castDirection, castDistance, castLayer);
     }
 }
