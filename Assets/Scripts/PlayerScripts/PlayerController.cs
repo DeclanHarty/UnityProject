@@ -19,13 +19,18 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if(Input.GetKeyDown("escape")) TogglePause();
+
+        
         
         if(!paused){
+            transform.localScale = new Vector3(movement.GetDireciton(), 1.75f, 0);
             movement.Move(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")));
             if(Input.GetButtonDown("Jump")) movement.HandleSpaceInput();
             if(Input.GetButtonUp("Jump")) movement.EndJumpEarly();
             if(Input.GetKeyDown("left shift")) movement.Slide();
         }
+
+        
     }
 
     public void TogglePause(){
