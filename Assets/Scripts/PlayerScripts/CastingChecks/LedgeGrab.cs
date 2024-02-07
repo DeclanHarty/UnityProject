@@ -22,7 +22,6 @@ public class LedgeGrab : MonoBehaviour
     {
         movement = player.GetComponent<Movement>();
         canVault = false;
-        Debug.Log((int)groundLayer);
     }
 
     // Update is called once per frame

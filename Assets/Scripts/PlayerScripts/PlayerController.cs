@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private bool paused;
 
+    [SerializeField] private GameObject sprite;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +30,14 @@ public class PlayerController : MonoBehaviour
             if(Input.GetButtonDown("Jump")) movement.HandleSpaceInput();
             if(Input.GetButtonUp("Jump")) movement.EndJumpEarly();
             if(Input.GetKeyDown("left shift")) movement.Slide();
+
+            if(movement.IsSliding()){
+                sprite.transform.localScale = new Vector2(1, .5f);
+                sprite.transform.localPosition = new Vector2(0,-.25f);
+            }else {
+                sprite.transform.localScale = new Vector2(1, 1);
+                sprite.transform.position = transform.position;
+            }
         }
 
         
