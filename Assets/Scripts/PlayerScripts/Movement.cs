@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -29,6 +30,8 @@ public class Movement : MonoBehaviour
     [Header("Jumping Stats")]
     [SerializeField] private float jumpStorageLimit;
     [SerializeField] private float jumpVelocity;
+    [SerializeField] private float earlyReleaseModifier;
+    private bool jumpReleasedEarly;
     private bool jumpStored;
     private float timeSinceJumpPressed = 0.0f;
 
@@ -90,62 +93,73 @@ public class Movement : MonoBehaviour
     public void Move(Vector2 _input){
         input = _input;
 
+        //Checsks grounded if not continues timeSinceLeftGround Timer
         if(!grounded){
             timeSinceLeftGround += Time.deltaTime;
         }
 
+        //Checks vaulting and input and starts the vault process if true
         if(canVault && input.x != 0){
             HandleVaulting();
             return;
         }else if(vaulting){
+            //Stops vaulting if the player presses down
             if(input.y < 0){
                 vaulting = false;
             }
             return;
         }
 
+        ApplyGravity();
+
+
+        // Checks if the player is currently sliding and if they are continues sliding and returns
         if(sliding){
             rb.position += new Vector2(slideSpeed * currentDirection * Time.deltaTime, 0);
             return;
         }
 
         
-        ApplyGravity();
-
         
+
+        // New Direction is set to zero every frame
         int newDirection = 0;
 
+        //New direction is set by horizontal input
         if(input.x > 0){
             newDirection = 1;
         }else if(input.x < 0){
             newDirection = -1;
         }
 
+        //Current direction is updated only if the direction changes. No input means the direction stays the same
         if(newDirection != currentDirection && newDirection != 0){
             currentDirection = newDirection;
             wallPresent = false;
         }
 
+        //Calculates horizontal velocity
         horizontalVelocity += input.x * horizontalAcceleration * Time.deltaTime;
 
+        //Adds friction if there is no player movement
         if(input.x == 0){
             horizontalVelocity = Mathf.MoveTowards(horizontalVelocity, 0, friction * Time.deltaTime);
         }
         
-
+        //Clamps player velocity to maxSpeed
         horizontalVelocity = Mathf.Clamp(horizontalVelocity, -maxSpeed, maxSpeed);
 
         if(jumpStored){
             HandleJumpStorage();  
         }
 
-        rb.position += new Vector2(horizontalVelocity * Time.deltaTime, 0);
-
+        //Stops player from moving if a wall is present
         if(wallPresent && !vaulting){
             horizontalVelocity = 0;
         }
 
-        rb.position += new Vector2(0, verticalVelocity * Time.deltaTime);
+        //Updates Players Horizontal Position
+        rb.position += new Vector2(horizontalVelocity * Time.deltaTime, verticalVelocity * Time.deltaTime);
     }
 
     public void Jump(){
@@ -154,14 +168,14 @@ public class Movement : MonoBehaviour
             verticalVelocity = jumpVelocity;
             jumpStored = false;
             timeSinceJumpPressed = 0.0f;
-        }else{
+        }else if(!sliding && !vaulting && !canVault){
             jumpStored = true;
         }
     }
 
     public void EndJumpEarly(){
         if(!grounded && verticalVelocity > 0){
-            verticalVelocity = 0;
+            jumpReleasedEarly = true;
         }
     }
 
@@ -180,6 +194,7 @@ public class Movement : MonoBehaviour
         grounded = check;
         if(grounded){
             verticalVelocity = 0;
+            jumpReleasedEarly = false;
         }else{
             timeSinceLeftGround = 0;
         }
@@ -197,6 +212,10 @@ public class Movement : MonoBehaviour
     private void ApplyGravity(){
         if (!grounded && !vaulting) { 
             if(verticalVelocity > TERMINAL_VELOCITY){
+                if(jumpReleasedEarly){
+                    verticalVelocity += gravityAccel * earlyReleaseModifier * Time.deltaTime;
+                    return;
+                }
                 verticalVelocity += gravityAccel * Time.deltaTime;
             }
         }
@@ -206,7 +225,7 @@ public class Movement : MonoBehaviour
         canVault = false;
         verticalVelocity = 0;
         horizontalVelocity = 0;
-        rb.position = ledge.getPosition() + new Vector2(beginClimbOffset.x, beginClimbOffset.y);
+        rb.position = ledge.getPosition() + new Vector2(beginClimbOffset.x * currentDirection, beginClimbOffset.y);
         wallPresent = false;
         vaulting = true;
 
@@ -230,7 +249,7 @@ public class Movement : MonoBehaviour
                 return;
             }else{
                 vaulting = false;
-                horizontalVelocity = maxSpeed * currentDirection;
+                horizontalVelocity = 2 * maxSpeed * currentDirection;
                 verticalVelocity = jumpVelocity;
                 return;
             }

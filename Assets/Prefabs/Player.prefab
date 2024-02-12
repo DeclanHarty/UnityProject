@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54ca30e90734f460499ddf089216cd90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.2
+  radius: 0.4
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -116,7 +116,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.15}
+  m_Offset: {x: 0, y: 0.21}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -127,7 +127,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.3}
+  m_Size: {x: 0.81, y: 0.41}
   m_EdgeRadius: 0
 --- !u!1 &6133848033088255162
 GameObject:
@@ -200,21 +200,22 @@ MonoBehaviour:
   horizontalAcceleration: 40
   friction: 40
   currentDirection: -1
-  gravityAccel: -20
+  gravityAccel: -40
   verticalVelocity: 0
   TERMINAL_VELOCITY: -20
   jumpStorageLimit: 0.1
-  jumpVelocity: 10
+  jumpVelocity: 20
+  earlyReleaseModifier: 2
   coyoteTime: 0.1
   canVault: 0
   vaulting: 0
-  beginClimbOffset: {x: 0.12, y: -0.85}
+  beginClimbOffset: {x: -0.5, y: -0.85}
   endClimbOffset: {x: 0.5, y: 0.8742858}
   vaultSpeed: 0.1
   ledgeJumpSpeed: 0
   wallPresent: 0
   slideSpeed: 10
-  slideTime: 0.25
+  slideTime: 0.3
   ledge: {fileID: 566696895329532391}
   groundCheckObject: {fileID: 6133848033489934461}
   wallCheckObj: {fileID: 347274886919243170}
@@ -237,7 +238,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &6133848033088255119
 CapsuleCollider2D:

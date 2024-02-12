@@ -18,8 +18,7 @@ public class CameraController : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void MoveCamera()
     {
         position = new Vector2(transform.position.x, transform.position.y);
         if(Mathf.Abs(player.GetPosition().y - position.y) > followDistance){
