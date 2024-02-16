@@ -31,7 +31,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float jumpStorageLimit;
     [SerializeField] private float jumpVelocity;
     [SerializeField] private float earlyReleaseModifier;
-    private bool jumpReleasedEarly;
+    private bool jumpHeld;
     private bool jumpStored;
     private float timeSinceJumpPressed = 0.0f;
 
@@ -90,8 +90,10 @@ public class Movement : MonoBehaviour
     void FixedUpdate(){
     }
 
-    public void Move(Vector2 _input){
+    public void Move(Vector2 _input, bool _jumpHeld){
         input = _input;
+
+        jumpHeld = _jumpHeld;
 
         //Checsks grounded if not continues timeSinceLeftGround Timer
         if(!grounded){
@@ -173,11 +175,6 @@ public class Movement : MonoBehaviour
         }
     }
 
-    public void EndJumpEarly(){
-        if(!grounded && verticalVelocity > 0){
-            jumpReleasedEarly = true;
-        }
-    }
 
     private void HandleJumpStorage(){
         if(grounded && timeSinceJumpPressed < jumpStorageLimit){
@@ -194,7 +191,6 @@ public class Movement : MonoBehaviour
         grounded = check;
         if(grounded){
             verticalVelocity = 0;
-            jumpReleasedEarly = false;
         }else{
             timeSinceLeftGround = 0;
         }
@@ -212,7 +208,7 @@ public class Movement : MonoBehaviour
     private void ApplyGravity(){
         if (!grounded && !vaulting) { 
             if(verticalVelocity > TERMINAL_VELOCITY){
-                if(jumpReleasedEarly){
+                if(!jumpHeld || verticalVelocity < 0){
                     verticalVelocity += gravityAccel * earlyReleaseModifier * Time.deltaTime;
                     return;
                 }
@@ -222,12 +218,13 @@ public class Movement : MonoBehaviour
     }
 
     private void HandleVaulting(){
+        vaulting = true;
         canVault = false;
         verticalVelocity = 0;
         horizontalVelocity = 0;
         rb.position = ledge.getPosition() + new Vector2(beginClimbOffset.x * currentDirection, beginClimbOffset.y);
         wallPresent = false;
-        vaulting = true;
+        
 
     }
 
@@ -238,7 +235,7 @@ public class Movement : MonoBehaviour
     }
 
     public void HandleSpaceInput(){
-        if(!canVault && !vaulting){
+        if(!(canVault || vaulting)){
             Jump();
             return;
         }

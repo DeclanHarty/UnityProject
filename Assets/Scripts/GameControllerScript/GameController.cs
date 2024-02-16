@@ -6,12 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    // Game Objects
     [SerializeField] private PlayerController player;
     [SerializeField] private CameraController mainCamera;
 
     [SerializeField] private KillBoxController killBox;
+    [SerializeField] private ScoreController scoreController;
 
     private GameState state = GameState.PLAYING;
+
+    // Score Fields 
+    private double score;
+    [SerializeField] private int pointsPerSec;
 
     public static GameController instance;
     // Start is called before the first frame update
@@ -26,8 +32,10 @@ public class GameController : MonoBehaviour
     void Update()
     {
         if(state == GameState.PLAYING){
+            // Call all Basic Controller Methods
             killBox.Move();
-            player.HandleController();
+            player.CollectInput();
+            
             mainCamera.MoveCamera();
 
             if(Input.GetKeyDown("escape")){
@@ -50,6 +58,17 @@ public class GameController : MonoBehaviour
                 SceneManager.LoadScene(scene.name);
             }
         }
+    }
+
+    void FixedUpdate(){
+        // Update Score and Change the UI to match
+        if(state == GameState.PLAYING){
+            score += Mathf.Floor(pointsPerSec * Time.deltaTime);
+            scoreController.UpdateScore(score);
+
+            player.HandleController();
+        }
+        
     }
 
     public void PlayerDies(){

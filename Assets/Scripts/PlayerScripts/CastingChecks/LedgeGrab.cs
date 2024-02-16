@@ -34,7 +34,7 @@ public class LedgeGrab : MonoBehaviour
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, Vector2.right, 0, groundLayer);
         ledgePos = hit.point;
         bool check;
-        if (hit){
+        if (hit && ledgePos.y < transform.position.y){
             check = true;
         }else {
             check = false;
@@ -42,6 +42,7 @@ public class LedgeGrab : MonoBehaviour
         bool finalCheck = check && !groundIntersect;
 
         if(finalCheck != canVault){
+            Debug.Log("Can Vault");
             canVault = check && !groundIntersect;
             movement.UpdateCanVault(canVault);
         }
@@ -49,6 +50,7 @@ public class LedgeGrab : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col){
         if(col.gameObject.layer == LayerMask.NameToLayer("Ground")){
+            Debug.Log("Wall Found");
             groundIntersect = true;
             numberOfColiders++;
         }
