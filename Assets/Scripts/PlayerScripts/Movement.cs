@@ -117,7 +117,7 @@ public class Movement : MonoBehaviour
 
         // Checks if the player is currently sliding and if they are continues sliding and returns
         if(sliding){
-            rb.position += new Vector2(slideSpeed * currentDirection * Time.deltaTime, 0);
+            rb.velocity = new Vector2(slideSpeed * currentDirection, verticalVelocity);
             return;
         }
 
@@ -161,7 +161,7 @@ public class Movement : MonoBehaviour
         }
 
         //Updates Players Horizontal Position
-        rb.position += new Vector2(horizontalVelocity * Time.deltaTime, verticalVelocity * Time.deltaTime);
+        rb.velocity = new Vector2(horizontalVelocity, verticalVelocity);
     }
 
     public void Jump(){
@@ -220,8 +220,7 @@ public class Movement : MonoBehaviour
     private void HandleVaulting(){
         vaulting = true;
         canVault = false;
-        verticalVelocity = 0;
-        horizontalVelocity = 0;
+        RemoveVelocity();
         rb.position = ledge.getPosition() + new Vector2(beginClimbOffset.x * currentDirection, beginClimbOffset.y);
         wallPresent = false;
         
@@ -275,6 +274,10 @@ public class Movement : MonoBehaviour
         col.size = new Vector2(1, 1);
         col.offset = new Vector2(0, 0);
         sliding = false;
+    }
+
+    public void RemoveVelocity(){
+        rb.velocity = Vector2.zero;
     }
 
     public float GetDireciton(){

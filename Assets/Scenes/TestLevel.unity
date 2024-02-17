@@ -261,6 +261,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8169610033799146770, guid: f038897d8e344476aae22ce8336b0212, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dc4859be75f81420aa2950eb87c19034, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f038897d8e344476aae22ce8336b0212, type: 3}
 --- !u!1 &1419860585
@@ -435,17 +439,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1558023763 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3579870147983726550, guid: 8cb15efeb7074460e80a415161ad8bf7, type: 3}
-  m_PrefabInstance: {fileID: 3579870147374340485}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31a2ee7494dca42e08535e575ed3d504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1859662764 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6133848033088255160, guid: f038897d8e344476aae22ce8336b0212, type: 3}
@@ -767,7 +760,7 @@ PrefabInstance:
     - target: {fileID: 8358217935204629468, guid: 1d81a4e4cad5c4b5a81de81b3cf233ba, type: 3}
       propertyPath: killBox
       value: 
-      objectReference: {fileID: 1558023763}
+      objectReference: {fileID: 1512524746}
     - target: {fileID: 8358217935204629468, guid: 1d81a4e4cad5c4b5a81de81b3cf233ba, type: 3}
       propertyPath: mainCamera
       value: 

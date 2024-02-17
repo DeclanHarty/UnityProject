@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public Movement movement;
 
     [SerializeField] private GameObject sprite;
+    [SerializeField] private Collider2D col;
 
     private Vector2 _input;
     private bool _spaceHeld;
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         movement = gameObject.GetComponent<Movement>();
+        col = gameObject.GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
@@ -37,7 +39,13 @@ public class PlayerController : MonoBehaviour
         }else {
             sprite.transform.localScale = new Vector2(1, 1);
             sprite.transform.position = transform.position;
+
+
         }  
+    }
+
+    public void FreezePlayer(){
+        movement.RemoveVelocity();
     }
 
     public Vector2 GetPosition(){

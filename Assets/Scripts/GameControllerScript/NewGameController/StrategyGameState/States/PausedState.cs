@@ -5,8 +5,10 @@ using UnityEngine;
 public class PausedState : StrategyGameState
 {
     private KillBoxController killBoxController;
+    private PlayerController playerController;
     public PausedState(NewGameController gameController) : base(gameController){
         killBoxController = gameController.GetKillBoxController();
+        playerController = gameController.GetPlayerController();
     }
     public override void FixedUpdateBehavior(){}
 
@@ -19,6 +21,7 @@ public class PausedState : StrategyGameState
 
     public override void OnStateBegin()
     {
+        playerController.FreezePlayer();
     }
 
     public override void OnStateEnd()

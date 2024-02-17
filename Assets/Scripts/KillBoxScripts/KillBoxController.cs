@@ -13,15 +13,16 @@ public class KillBoxController : MonoBehaviour
 
     public void Awake(){
         rb = GetComponent<Rigidbody2D>();
+        rb.velocity = Vector2.zero;
     }
 
 
-    public void Start(){
+    public void StartMoving(){
         rb.velocity = new Vector2(0, speed);
     }
 
-    public void Stop(){
-        rb.velocity = new Vector2(0, 0);
+    public void StopMoving(){
+        rb.velocity = Vector2.zero;
     }
 
     void OnTriggerEnter2D(Collider2D col){

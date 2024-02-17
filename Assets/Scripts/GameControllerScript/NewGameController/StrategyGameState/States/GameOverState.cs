@@ -5,7 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class GameOverState : StrategyGameState
 {
-    public GameOverState(NewGameController gameController) : base(gameController){}
+    private KillBoxController killBoxController;
+    private PlayerController playerController;
+    public GameOverState(NewGameController gameController) : base(gameController){
+        killBoxController = gameController.GetKillBoxController();
+        playerController = gameController.GetPlayerController();
+    }
     public override void FixedUpdateBehavior()
     {
 
@@ -13,7 +18,8 @@ public class GameOverState : StrategyGameState
 
     public override void OnStateBegin()
     {
-        GetGameController().GetKillBoxController().Stop();
+        killBoxController.StopMoving();
+        playerController.FreezePlayer();
     }
 
     public override void OnStateEnd()
