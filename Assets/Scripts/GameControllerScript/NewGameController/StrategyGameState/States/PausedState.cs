@@ -19,7 +19,6 @@ public class PausedState : StrategyGameState
 
     public override void OnStateBegin()
     {
-        killBoxController.Stop();
     }
 
     public override void OnStateEnd()
