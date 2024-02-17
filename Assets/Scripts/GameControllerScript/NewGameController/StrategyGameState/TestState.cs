@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TestState : StrategyGameState
 {
-    public TestState(){}
+    public TestState(NewGameController gameController) : base(gameController){}
     public override void FixedUpdateBehavior()
     {
         Debug.Log("FixedTest");
@@ -14,4 +14,16 @@ public class TestState : StrategyGameState
     {
         Debug.Log("Test");
     }
+
+    public override void OnStateBegin()
+    {
+        Debug.Log("TestState Begins");
+    }
+
+    public override void OnStateEnd()
+    {
+        Debug.Log("TestState Ends");
+    }
+
+    
 }

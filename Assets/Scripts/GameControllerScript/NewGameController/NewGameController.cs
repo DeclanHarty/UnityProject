@@ -12,14 +12,29 @@ public class NewGameController : MonoBehaviour
     [SerializeField] private KillBoxController killBox;
     [SerializeField] private ScoreController scoreController;
 
+    // Score Fields 
+    private double score;
+    [SerializeField] private int pointsPerSec;
+
     private StrategyGameState state;
 
-    void Awake(){
+    public static NewGameController instance;
+
+    void Start(){
         UpdateState(new PlayState(this));
+        if(instance == null){
+            instance = this;
+        }
+    }
+
+    public void PlayerDies(){
+        UpdateState(new GameOverState(this));
     }
 
     public void UpdateState(StrategyGameState newState){
+        if(state != null) state.OnStateEnd();
         state = newState;
+        state.OnStateBegin();
     }
 
     public void Update(){
@@ -30,6 +45,8 @@ public class NewGameController : MonoBehaviour
         state.FixedUpdateBehavior();
     }
 
+
+    // Getter Methods
     public PlayerController GetPlayerController(){
         return player;
     }
@@ -44,5 +61,17 @@ public class NewGameController : MonoBehaviour
 
     public ScoreController GetScoreController(){
         return scoreController;
+    }
+
+    public double GetScore(){
+        return score;
+    }
+
+    public void UpdateScore(double score){
+        this.score = score;
+    }
+
+    public int GetPointsPerSec(){
+        return pointsPerSec;
     }
 }

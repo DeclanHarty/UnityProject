@@ -33,7 +33,7 @@ public class GameController : MonoBehaviour
     {
         if(state == GameState.PLAYING){
             // Call all Basic Controller Methods
-            killBox.Move();
+            killBox.Start();
             player.CollectInput();
             
             mainCamera.MoveCamera();

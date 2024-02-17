@@ -16,13 +16,17 @@ public class KillBoxController : MonoBehaviour
     }
 
 
-    public void Move(){
-        rb.position += new Vector2(0, speed * Time.deltaTime);
+    public void Start(){
+        rb.velocity = new Vector2(0, speed);
+    }
+
+    public void Stop(){
+        rb.velocity = new Vector2(0, 0);
     }
 
     void OnTriggerEnter2D(Collider2D col){
         if(col.tag == "Player"){
-            GameController.instance.PlayerDies();
+            NewGameController.instance.PlayerDies();
         }
     }
 

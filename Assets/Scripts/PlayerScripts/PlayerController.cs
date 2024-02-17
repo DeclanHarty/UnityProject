@@ -22,7 +22,6 @@ public class PlayerController : MonoBehaviour
     {
         transform.localScale = new Vector3(movement.GetDireciton(), 1.75f, 0);
         movement.Move(_input, _spaceHeld);
-         
     }
 
     public void CollectInput(){
