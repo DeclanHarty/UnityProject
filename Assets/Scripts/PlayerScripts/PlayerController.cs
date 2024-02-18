@@ -39,8 +39,6 @@ public class PlayerController : MonoBehaviour
         }else {
             sprite.transform.localScale = new Vector2(1, 1);
             sprite.transform.position = transform.position;
-
-
         }  
     }
 

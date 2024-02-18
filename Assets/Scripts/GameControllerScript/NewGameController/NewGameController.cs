@@ -10,7 +10,7 @@ public class NewGameController : MonoBehaviour
     [SerializeField] private CameraController mainCamera;
 
     [SerializeField] private KillBoxController killBox;
-    [SerializeField] private ScoreController scoreController;
+    [SerializeField] private UIController uiController;
 
     // Score Fields 
     private double score;
@@ -59,8 +59,8 @@ public class NewGameController : MonoBehaviour
         return killBox;
     }
 
-    public ScoreController GetScoreController(){
-        return scoreController;
+    public UIController GetUIController(){
+        return uiController;
     }
 
     public double GetScore(){

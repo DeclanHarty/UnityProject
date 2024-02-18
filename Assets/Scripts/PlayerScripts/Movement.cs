@@ -11,7 +11,7 @@ public class Movement : MonoBehaviour
     // Horizontal Movement
     [Header("Horizontal Movement Stats")]
     [SerializeField] private float maxSpeed;
-    private float horizontalVelocity;
+    [SerializeField] private float horizontalVelocity;
     [SerializeField] private float horizontalAcceleration;
     [SerializeField] private float friction;
     [SerializeField] private int currentDirection = 1;
@@ -43,6 +43,7 @@ public class Movement : MonoBehaviour
     // Vault Check Fields
     [SerializeField] private bool canVault;
     [SerializeField] private bool vaulting;
+    [SerializeField] private bool finishingVault;
     [SerializeField] private Vector2 beginClimbOffset;
     [SerializeField] private Vector2 endClimbOffset;
     [SerializeField] private float vaultSpeed;
@@ -202,6 +203,7 @@ public class Movement : MonoBehaviour
 
     public void UpdateCanVault(bool check){
         canVault = check;
+        if(canVault) RemoveVelocity();
     }
 
     
@@ -221,6 +223,8 @@ public class Movement : MonoBehaviour
         vaulting = true;
         canVault = false;
         RemoveVelocity();
+        horizontalVelocity = 0;
+        verticalVelocity = 0;
         rb.position = ledge.getPosition() + new Vector2(beginClimbOffset.x * currentDirection, beginClimbOffset.y);
         wallPresent = false;
         
@@ -228,13 +232,14 @@ public class Movement : MonoBehaviour
     }
 
     private void FinishVault(){
-
-        rb.position = ledge.getPosition() + new Vector2(endClimbOffset.x * currentDirection, endClimbOffset.y);
-        vaulting = false;
+        if(vaulting){
+            rb.position = ledge.getPosition() + new Vector2(endClimbOffset.x * currentDirection, endClimbOffset.y);
+            vaulting = false;
+        }  
     }
 
     public void HandleSpaceInput(){
-        if(!(canVault || vaulting)){
+        if(!(canVault || vaulting || finishingVault)){
             Jump();
             return;
         }
@@ -245,7 +250,7 @@ public class Movement : MonoBehaviour
                 return;
             }else{
                 vaulting = false;
-                horizontalVelocity = 2 * maxSpeed * currentDirection;
+                horizontalVelocity = 2 * maxSpeed * -1 *currentDirection;
                 verticalVelocity = jumpVelocity;
                 return;
             }

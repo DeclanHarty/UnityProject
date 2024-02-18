@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class StrategyGameState
 {
-    private NewGameController gameController;
+    protected NewGameController gameController;
     public StrategyGameState(NewGameController gameController){
         this.gameController = gameController;
     }

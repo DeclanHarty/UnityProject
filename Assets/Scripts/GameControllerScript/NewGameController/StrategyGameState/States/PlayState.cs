@@ -10,7 +10,7 @@ public class PlayState : StrategyGameState
     private PlayerController player;
     private KillBoxController killBox;
     private CameraController camera;
-    private ScoreController scoreObject;
+    private UIController ui;
 
     public PlayState(NewGameController newGameController) : base(newGameController){
         NewGameController gameController = GetGameController();
@@ -18,15 +18,15 @@ public class PlayState : StrategyGameState
         player = gameController.GetPlayerController();
         killBox = gameController.GetKillBoxController();
         camera = gameController.GetCameraController();
-        scoreObject = gameController.GetScoreController();
+        ui = gameController.GetUIController();
     }
     public override void FixedUpdateBehavior()
     {
-        if(scoreObject){
+        if(ui){
             NewGameController gameController = GetGameController();
             player.HandleController();
             gameController.UpdateScore(gameController.GetScore() + Mathf.Floor(gameController.GetPointsPerSec() * Time.deltaTime));
-            scoreObject.UpdateScore(gameController.GetScore());
+            ui.UpdateScore(gameController.GetScore());
         }
     }
 

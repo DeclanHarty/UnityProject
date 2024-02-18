@@ -7,9 +7,12 @@ public class GameOverState : StrategyGameState
 {
     private KillBoxController killBoxController;
     private PlayerController playerController;
+    private UIController uiController;
     public GameOverState(NewGameController gameController) : base(gameController){
         killBoxController = gameController.GetKillBoxController();
         playerController = gameController.GetPlayerController();
+        uiController = gameController.GetUIController();
+
     }
     public override void FixedUpdateBehavior()
     {
@@ -20,11 +23,13 @@ public class GameOverState : StrategyGameState
     {
         killBoxController.StopMoving();
         playerController.FreezePlayer();
+        uiController.OpenGameOverMenu(gameController.GetScore());
+        uiController.HideScore();
     }
 
     public override void OnStateEnd()
     {
-        // Nothing Here
+        uiController.CloseGameOverMenu();
     }
 
     public override void UpdateBehavior()

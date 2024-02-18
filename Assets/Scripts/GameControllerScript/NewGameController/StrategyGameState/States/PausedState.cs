@@ -6,9 +6,12 @@ public class PausedState : StrategyGameState
 {
     private KillBoxController killBoxController;
     private PlayerController playerController;
+    private UIController uiController;
     public PausedState(NewGameController gameController) : base(gameController){
         killBoxController = gameController.GetKillBoxController();
         playerController = gameController.GetPlayerController();
+        uiController = gameController.GetUIController();
+        
     }
     public override void FixedUpdateBehavior(){}
 
@@ -22,10 +25,11 @@ public class PausedState : StrategyGameState
     public override void OnStateBegin()
     {
         playerController.FreezePlayer();
+        uiController.OpenPauseMenu();
     }
 
     public override void OnStateEnd()
     {
-        // Nothing Here
+        uiController.ClosePauseMenu();
     }
 }

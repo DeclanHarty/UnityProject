@@ -12,14 +12,12 @@ public class ScoreController : MonoBehaviour
         scoreText = GetComponent<TextMeshProUGUI>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void UpdateScore(double score){
         scoreText.text = score.ToString();
+    }
+
+    public void HideScore(){
+        gameObject.SetActive(false);
     }
 
 
