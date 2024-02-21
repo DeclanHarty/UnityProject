@@ -42,7 +42,6 @@ public class LedgeGrab : MonoBehaviour
         bool finalCheck = check && !groundIntersect;
 
         if(finalCheck != canVault){
-            Debug.Log("Can Vault");
             canVault = check && !groundIntersect;
             movement.UpdateCanVault(canVault);
         }
@@ -50,7 +49,6 @@ public class LedgeGrab : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col){
         if(col.gameObject.layer == LayerMask.NameToLayer("Ground")){
-            Debug.Log("Wall Found");
             groundIntersect = true;
             numberOfColiders++;
         }

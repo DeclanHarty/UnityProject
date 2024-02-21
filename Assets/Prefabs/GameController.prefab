@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8358217935204629459}
-  - component: {fileID: 8358217935204629469}
   - component: {fileID: 8358217935204629468}
   m_Layer: 0
   m_Name: GameController
@@ -33,27 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &8358217935204629469
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8358217935204629456}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &8358217935204629468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,5 +47,5 @@ MonoBehaviour:
   player: {fileID: 0}
   mainCamera: {fileID: 0}
   killBox: {fileID: 0}
-  scoreController: {fileID: 0}
+  uiController: {fileID: 0}
   pointsPerSec: 50

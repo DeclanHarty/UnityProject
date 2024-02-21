@@ -32,12 +32,12 @@ public class PlayState : StrategyGameState
 
     public override void OnStateBegin()
     {
-        killBox.StartMoving();
+        killBox?.StartMoving();
     }
 
     public override void OnStateEnd()
     {
-        killBox.StopMoving();
+        killBox?.StopMoving();
     }
 
     public override void UpdateBehavior()

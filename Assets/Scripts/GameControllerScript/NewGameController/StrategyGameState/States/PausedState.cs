@@ -20,6 +20,7 @@ public class PausedState : StrategyGameState
         if(Input.GetKeyDown("escape")){
             GetGameController().UpdateState(new PlayState(GetGameController()));
         }
+
     }
 
     public override void OnStateBegin()

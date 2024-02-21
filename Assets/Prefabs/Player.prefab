@@ -78,7 +78,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1283705486950308174}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.504, y: 0.502, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 0.5714286, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -182,8 +182,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: {fileID: 6133848033088255161}
-  paused: 0
   sprite: {fileID: 8944350727725084106}
+  col: {fileID: 0}
 --- !u!114 &6133848033088255161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSpeed: 8
+  horizontalVelocity: 0
   horizontalAcceleration: 40
   friction: 40
   currentDirection: -1
@@ -204,17 +205,19 @@ MonoBehaviour:
   verticalVelocity: 0
   TERMINAL_VELOCITY: -20
   jumpStorageLimit: 0.1
-  jumpVelocity: 20
+  jumpVelocity: 15
   earlyReleaseModifier: 2
-  coyoteTime: 0.1
+  airStrafeMultiplier: 0.75
+  coyoteTime: 0.05
   canVault: 0
   vaulting: 0
-  beginClimbOffset: {x: -0.5, y: -0.85}
-  endClimbOffset: {x: 0.5, y: 0.8742858}
-  vaultSpeed: 0.1
+  finishingVault: 0
+  beginClimbOffset: {x: -0.5, y: -0.875}
+  endClimbOffset: {x: 0.5, y: 0.875}
+  vaultSpeed: 0.2
   ledgeJumpSpeed: 0
   wallPresent: 0
-  slideSpeed: 10
+  slideSpeed: 16
   slideTime: 0.3
   ledge: {fileID: 566696895329532391}
   groundCheckObject: {fileID: 6133848033489934461}
@@ -422,7 +425,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: dc4859be75f81420aa2950eb87c19034, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

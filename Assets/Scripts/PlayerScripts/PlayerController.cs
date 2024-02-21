@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     public Movement movement;
 
     [SerializeField] private GameObject sprite;
-    [SerializeField] private Collider2D col;
+    [SerializeField] private CapsuleCollider2D col;
 
     private Vector2 _input;
     private bool _spaceHeld;
@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         movement = gameObject.GetComponent<Movement>();
-        col = gameObject.GetComponent<Collider2D>();
+        col = gameObject.GetComponent<CapsuleCollider2D>();
     }
 
     // Update is called once per frame
@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
         if(movement.IsSliding()){
             sprite.transform.localScale = new Vector2(1, .5f);
             sprite.transform.localPosition = new Vector2(0,-.25f);
+
+            col.size = new Vector2(.5f, .5f);
         }else {
             sprite.transform.localScale = new Vector2(1, 1);
             sprite.transform.position = transform.position;

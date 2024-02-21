@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 
 public class NewGameController : MonoBehaviour
@@ -16,23 +17,33 @@ public class NewGameController : MonoBehaviour
     private double score;
     [SerializeField] private int pointsPerSec;
 
-    private StrategyGameState state;
+    [SerializeField] private StrategyGameState state;
 
-    public static NewGameController instance;
+    // testing fields
+
+    private float startTime;
+
 
     void Start(){
         UpdateState(new PlayState(this));
-        if(instance == null){
-            instance = this;
-        }
+        killBox.SetGameController(this);
     }
 
     public void PlayerDies(){
         UpdateState(new GameOverState(this));
     }
 
+    // Methods For Pause/Game Over MenuMenu
+    public void GoToMainMenu(){
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void Resume(){
+        UpdateState(new PlayState(this));
+    }
+
     public void UpdateState(StrategyGameState newState){
-        if(state != null) state.OnStateEnd();
+        state?.OnStateEnd();
         state = newState;
         state.OnStateBegin();
     }
@@ -73,5 +84,9 @@ public class NewGameController : MonoBehaviour
 
     public int GetPointsPerSec(){
         return pointsPerSec;
+    }
+
+    public StrategyGameState GetState(){
+        return state;
     }
 }

@@ -35,6 +35,8 @@ public class Movement : MonoBehaviour
     private bool jumpStored;
     private float timeSinceJumpPressed = 0.0f;
 
+    [SerializeField] private float airStrafeMultiplier;
+
     // Ground Check Fields
     private bool grounded; 
     private float timeSinceLeftGround;
@@ -75,17 +77,17 @@ public class Movement : MonoBehaviour
 
     // Wall Check
     [SerializeField] private GameObject wallCheckObj;
-    private WallCheck wallCheck;
+    // private WallCheck wallCheck;
 
-    private GroundCheck groundCheck;
+    // private GroundCheck groundCheck;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
-        groundCheck = groundCheckObject.GetComponent<GroundCheck>();
-        wallCheck = wallCheckObj.GetComponent<WallCheck>();
+        // groundCheck = groundCheckObject.GetComponent<GroundCheck>();
+        // wallCheck = wallCheckObj.GetComponent<WallCheck>();
     }
 
     void FixedUpdate(){
@@ -102,7 +104,7 @@ public class Movement : MonoBehaviour
         }
 
         //Checks vaulting and input and starts the vault process if true
-        if(canVault && input.x != 0){
+        if(canVault && input.x != 0 && !(verticalVelocity >= 10)){
             HandleVaulting();
             return;
         }else if(vaulting){
@@ -142,11 +144,24 @@ public class Movement : MonoBehaviour
         }
 
         //Calculates horizontal velocity
-        horizontalVelocity += input.x * horizontalAcceleration * Time.deltaTime;
+        float multiplier;
+        if(grounded){
+            multiplier = 1f;
+        }else{
+            multiplier = airStrafeMultiplier;
+        }
+        horizontalVelocity += input.x * horizontalAcceleration * multiplier * Time.deltaTime;
 
         //Adds friction if there is no player movement
         if(input.x == 0){
-            horizontalVelocity = Mathf.MoveTowards(horizontalVelocity, 0, friction * Time.deltaTime);
+            float frictionMultiplier;
+            if(grounded){
+                frictionMultiplier = 1;
+            }else{
+                frictionMultiplier = .25f;
+            }
+
+            horizontalVelocity = Mathf.MoveTowards(horizontalVelocity, 0, friction * frictionMultiplier * Time.deltaTime);
         }
         
         //Clamps player velocity to maxSpeed

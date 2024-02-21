@@ -11,9 +11,15 @@ public class KillBoxController : MonoBehaviour
     
     [SerializeField] private float speed;
 
+    private NewGameController gameController;
+
     public void Awake(){
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = Vector2.zero;
+    }
+
+    public void SetGameController(NewGameController gameController){
+        this.gameController = gameController;
     }
 
 
@@ -27,7 +33,7 @@ public class KillBoxController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col){
         if(col.tag == "Player"){
-            NewGameController.instance.PlayerDies();
+           gameController?.PlayerDies();
         }
     }
 
