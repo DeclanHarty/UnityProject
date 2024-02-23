@@ -29,5 +29,7 @@ public class CameraController : MonoBehaviour
 
             transform.position += new Vector3(0, speedMultiplier * cameraSpeed * Time.deltaTime, 0);
         }
+
+        transform.position = new Vector3(0, Mathf.Max(0,transform.position.y), -10);
     }
 }
