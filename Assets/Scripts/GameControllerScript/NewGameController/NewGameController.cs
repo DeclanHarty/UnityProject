@@ -12,6 +12,7 @@ public class NewGameController : MonoBehaviour
 
     [SerializeField] private KillBoxController killBox;
     [SerializeField] private UIController uiController;
+    [SerializeField] private LevelBuilder levelBuilder;
 
     // Score Fields 
     private double score;
@@ -72,6 +73,10 @@ public class NewGameController : MonoBehaviour
 
     public UIController GetUIController(){
         return uiController;
+    }
+
+    public LevelBuilder GetLevelBuilder(){
+        return levelBuilder;
     }
 
     public double GetScore(){

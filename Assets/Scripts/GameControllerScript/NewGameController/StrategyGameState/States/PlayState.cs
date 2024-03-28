@@ -45,6 +45,7 @@ public class PlayState : StrategyGameState
         if(player){
             player.CollectInput();
             camera.MoveCamera();
+            gameController.GetLevelBuilder().HandleBuilding(player.GetPosition().y);
         }
         
 

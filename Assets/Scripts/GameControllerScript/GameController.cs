@@ -9,9 +9,9 @@ public class GameController : MonoBehaviour
     // Game Objects
     [SerializeField] private PlayerController player;
     [SerializeField] private CameraController mainCamera;
-
     [SerializeField] private KillBoxController killBox;
     [SerializeField] private ScoreController scoreController;
+    [SerializeField] private LevelBuilder levelBuilder;
 
     private GameState state = GameState.PLAYING;
 
