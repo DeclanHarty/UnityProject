@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -16,13 +17,19 @@ public class LevelBuilder : MonoBehaviour
 
     private LevelPiece lastPiece;
 
+    private LevelPiece[] activePieces;
+
+    void Start(){
+        activePieces = new LevelPiece[5];
+    }
+
     void BuildNextPiece(){
         LevelPiece nextPiece = null;
-        if(lastPiece == null){
+        if(activePieces[0] == null){
             nextPiece = doublePieces.GetRandomPiece();
         }
         else{
-            switch(lastPiece.GetExit()){
+            switch(activePieces[0].GetExit()){
                 case Connector.SINGLE_LEFT:
                 nextPiece = singleLeftPieces.GetRandomPiece();
                     break;
@@ -38,8 +45,23 @@ public class LevelBuilder : MonoBehaviour
             }
         }
 
-        lastPiece = Instantiate(nextPiece.gameObject, new Vector3(0, nextBuildPosition, 0), Quaternion.identity).GetComponent<LevelPiece>();
+        activePieces = SetActivePieces(nextPiece);
+        activePieces[0] = Instantiate(nextPiece.gameObject, new Vector3(0, nextBuildPosition, 0), Quaternion.identity).GetComponent<LevelPiece>();
+        foreach(LevelPiece piece in activePieces){
+            Debug.Log(piece);
+        }
         nextBuildPosition += distanceBetweenBuilds;
+    }
+
+    private LevelPiece[] SetActivePieces(LevelPiece newPiece){
+        LevelPiece[] stillActivePieces = new LevelPiece[5];
+        Array.Copy(activePieces, 0, stillActivePieces, 1, 4);
+
+        if(activePieces[4] != null){
+            Debug.Log("Destroy");
+            Destroy(activePieces[4].gameObject);
+        }
+        return stillActivePieces;
     }
 
     public void HandleBuilding(float playerYPos){

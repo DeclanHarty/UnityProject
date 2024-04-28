@@ -10,6 +10,7 @@ public class KillBoxController : MonoBehaviour
     private Rigidbody2D rb;
     
     [SerializeField] private float speed;
+    [SerializeField] private float maxDistanceFromPlayer;
 
     private NewGameController gameController;
 
@@ -35,6 +36,17 @@ public class KillBoxController : MonoBehaviour
         if(col.tag == "Player"){
            gameController?.PlayerDies();
         }
+    }
+
+    public Vector2 GetPosition(){
+        return rb.position;
+    }
+    public void SetPosition(Vector2 newPos){
+        rb.position = newPos;
+    }
+
+    public float GetMaxDistanceFromPlayer(){
+        return maxDistanceFromPlayer;
     }
 
 }

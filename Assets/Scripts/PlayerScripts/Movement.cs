@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
@@ -29,6 +30,7 @@ public class Movement : MonoBehaviour
     // Jump Fields
     [Header("Jumping Stats")]
     [SerializeField] private float jumpStorageLimit;
+    [SerializeField] private float jumpHeight;
     [SerializeField] private float jumpVelocity;
     [SerializeField] private float earlyReleaseModifier;
     private bool jumpHeld;
@@ -38,7 +40,7 @@ public class Movement : MonoBehaviour
     [SerializeField] private float airStrafeMultiplier;
 
     // Ground Check Fields
-    private bool grounded; 
+    [SerializeField] private bool grounded; 
     private float timeSinceLeftGround;
     [SerializeField] private float coyoteTime;
 
@@ -86,6 +88,7 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
+        jumpVelocity = Mathf.Sqrt(2*Mathf.Abs(gravityAccel)*jumpHeight);
         // groundCheck = groundCheckObject.GetComponent<GroundCheck>();
         // wallCheck = wallCheckObj.GetComponent<WallCheck>();
     }
@@ -172,9 +175,9 @@ public class Movement : MonoBehaviour
         }
 
         //Stops player from moving if a wall is present
-        if(wallPresent && !vaulting){
-            horizontalVelocity = 0;
-        }
+        // if(wallPresent && !vaulting){
+        //     horizontalVelocity = 0;
+        // }
 
         //Updates Players Horizontal Position
         rb.velocity = new Vector2(horizontalVelocity, verticalVelocity);
@@ -204,9 +207,18 @@ public class Movement : MonoBehaviour
     }
 
     public void UpdateGrounded(bool check){
-        grounded = check;
+        if(check == true){
+            if(verticalVelocity <= 0){
+                airStrafeMultiplier = .75f;
+                grounded = check;
+            }
+    
+        }else{
+            grounded = check;
+        }
+        
         if(grounded){
-            verticalVelocity = 0;
+            //verticalVelocity = 0;
         }else{
             timeSinceLeftGround = 0;
         }
@@ -242,8 +254,6 @@ public class Movement : MonoBehaviour
         verticalVelocity = 0;
         rb.position = ledge.getPosition() + new Vector2(beginClimbOffset.x * currentDirection, beginClimbOffset.y);
         wallPresent = false;
-        
-
     }
 
     private void FinishVault(){
@@ -254,10 +264,17 @@ public class Movement : MonoBehaviour
     }
 
     public void HandleSpaceInput(){
+        // Maybe Reintegrate Later
+        // if(!grounded && wallPresent && !vaulting){
+        //     WallJump();
+        // }
+
         if(!(canVault || vaulting || finishingVault)){
             Jump();
             return;
         }
+
+        
 
         if(vaulting){
             if(Mathf.Abs(input.x + currentDirection) >= 1){
@@ -265,12 +282,20 @@ public class Movement : MonoBehaviour
                 return;
             }else{
                 vaulting = false;
-                horizontalVelocity = 2 * maxSpeed * -1 *currentDirection;
+                horizontalVelocity = 2 * maxSpeed * -1 * currentDirection;
                 verticalVelocity = jumpVelocity;
                 return;
             }
             
         }
+    }
+
+    // Wall Jump
+
+    private void WallJump(){
+        airStrafeMultiplier = 0f;
+        horizontalVelocity = -currentDirection * maxSpeed;
+        verticalVelocity = jumpVelocity;
     }
 
     // Wall Check

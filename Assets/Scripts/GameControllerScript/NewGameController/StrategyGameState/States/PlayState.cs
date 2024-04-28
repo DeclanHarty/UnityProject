@@ -47,6 +47,11 @@ public class PlayState : StrategyGameState
             camera.MoveCamera();
             gameController.GetLevelBuilder().HandleBuilding(player.GetPosition().y);
         }
+
+        // Check to see if player is too far ahead of killBox
+        if(player.GetPosition().y - killBox.GetPosition().y > killBox.GetMaxDistanceFromPlayer()){
+            killBox.SetPosition(new Vector2(0, player.GetPosition().y - killBox.GetMaxDistanceFromPlayer()));
+        }
         
 
         if(Input.GetKeyDown("escape")){
